@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "DownloadNSOperation.h"
+#import "OperationString.h"
 @interface ViewController ()
 @property (nonatomic,strong)UIImageView *image;
 @end
@@ -18,8 +19,13 @@
     [super viewDidLoad];
     _image =[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 200, 200)];
     [self.view addSubview:_image];
-    [self testGCD];
+    [self stringtest];
 
+}
+-(void)stringtest
+{
+ BOOL isorno =   [OperationString isOnlyContainLettersWithString:@"afasfsdf"];
+    NSLog(@"ssss");
 }
 
 -(void)testGCD

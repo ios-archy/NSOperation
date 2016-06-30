@@ -16,6 +16,7 @@
 		28971E6A1D23A3E2002D1A93 /* OperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 28971E691D23A3E2002D1A93 /* OperationTests.m */; };
 		28971E751D23A3E3002D1A93 /* OperationUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 28971E741D23A3E3002D1A93 /* OperationUITests.m */; };
 		28971E841D23BBCF002D1A93 /* DownloadNSOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 28971E831D23BBCF002D1A93 /* DownloadNSOperation.m */; };
+		28C8DF431D24F86400644ED3 /* OperationString.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C8DF421D24F86400644ED3 /* OperationString.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,8 @@
 		28971E761D23A3E3002D1A93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		28971E821D23BBCF002D1A93 /* DownloadNSOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadNSOperation.h; sourceTree = "<group>"; };
 		28971E831D23BBCF002D1A93 /* DownloadNSOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadNSOperation.m; sourceTree = "<group>"; };
+		28C8DF411D24F86400644ED3 /* OperationString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OperationString.h; sourceTree = "<group>"; };
+		28C8DF421D24F86400644ED3 /* OperationString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OperationString.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +111,8 @@
 				28971E531D23A3E2002D1A93 /* AppDelegate.m */,
 				28971E551D23A3E2002D1A93 /* ViewController.h */,
 				28971E561D23A3E2002D1A93 /* ViewController.m */,
+				28C8DF411D24F86400644ED3 /* OperationString.h */,
+				28C8DF421D24F86400644ED3 /* OperationString.m */,
 				28971E821D23BBCF002D1A93 /* DownloadNSOperation.h */,
 				28971E831D23BBCF002D1A93 /* DownloadNSOperation.m */,
 				28971E581D23A3E2002D1A93 /* Main.storyboard */,
@@ -279,6 +284,7 @@
 				28971E541D23A3E2002D1A93 /* AppDelegate.m in Sources */,
 				28971E841D23BBCF002D1A93 /* DownloadNSOperation.m in Sources */,
 				28971E511D23A3E2002D1A93 /* main.m in Sources */,
+				28C8DF431D24F86400644ED3 /* OperationString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
