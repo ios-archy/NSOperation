@@ -19,8 +19,46 @@
     [super viewDidLoad];
     _image =[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 200, 200)];
     [self.view addSubview:_image];
-    [self stringtest];
+//    [self stringtest];
+    [self NSTHreadTest];
+}
 
+//多线程NSTHread
+-(void)NSTHreadTest
+{
+    //创建和启动线程
+    //一个NSTHread对象就代表一条线程
+    //创建启动线程
+    NSThread *thread = [[NSThread alloc]initWithTarget:self selector:@selector(runtest) object:nil];
+    //设置线程的名字
+    [thread setName:@"dashabi"];
+    //线程一启动，就会告诉CPU准备就绪，可以随时接受CPU调度！CPU调度当前线程之后，就会在线程thread中执行self的runtest方法
+    [thread start];
+    
+    //阻塞（暂停）线程
+    [NSThread sleepForTimeInterval:700];
+    [NSThread sleepUntilDate:[NSDate date]];
+    
+    //退出线程
+    [NSThread exit];
+//    [NSThread mainThread];//获取主线程
+    
+    if ([thread isMainThread]) { //判断时候是主线程
+        NSLog(@"主线程");
+    }
+    NSThread *current =[NSThread currentThread];
+    
+    //创建并启动线程
+    [NSThread detachNewThreadSelector:@selector(runtest) toTarget:self withObject:nil];
+    
+    //隐士创建并启动线程
+    [self performSelectorInBackground:@selector(runtest) withObject:nil];
+    
+    
+}
+-(void)runtest
+{
+  
 }
 -(void)stringtest
 {

@@ -18,6 +18,14 @@
 +(BOOL)isOnlyContainLettersWithString:(NSString *)string
 {
     NSCharacterSet *letterCharacterset =[[NSCharacterSet letterCharacterSet]invertedSet];
+    if([string rangeOfCharacterFromSet:letterCharacterset].location !=NSNotFound)
+    {
+        return NO;
+    }
+    else
+    {
+        return YES;
+    }
     return ([string rangeOfCharacterFromSet:letterCharacterset].location==NSNotFound);
 }
 +(BOOL)isOnlyContainNumbersWithString:(NSString *)string
