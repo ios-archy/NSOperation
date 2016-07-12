@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "DownloadNSOperation.h"
 #import "OperationString.h"
+#import <pthread.h>
 @interface ViewController ()
 @property (nonatomic,strong)UIImageView *image;
 @end
@@ -20,9 +21,104 @@
     _image =[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 200, 200)];
     [self.view addSubview:_image];
 //    [self stringtest];
-    [self NSTHreadTest];
+//    [self NSTHreadTest];
+//    [self groupQueue];
+    [self timerCount];
+}
+-(void)timerCount
+{
+    __block int timeout = 0;
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+    // 每秒执行
+    dispatch_source_set_timer(timer, dispatch_walltime(NULL, 0), 1.0*NSEC_PER_SEC, 0);
+    dispatch_source_set_event_handler(timer, ^{
+        if (timeout >= 30) {// 2. 最长停留时间：30秒。 30秒后无论是否领完，都会消失，
+            dispatch_source_cancel(timer);
+            dispatch_async(dispatch_get_main_queue(), ^{
+               
+            });
+        } else if(timeout <=5) { //1. 最短停留时间：5秒。 5秒内无论是否领完，都不会消失。
+            int seconds = timeout % 60;
+            dispatch_async(dispatch_get_main_queue(), ^{
+               
+                
+            });
+            timeout++;
+        }
+        else if (timeout>5 &&timeout<30) //2. 最长停留时间：30秒。 30秒后无论是否领完，都会消失，多余的小鱼不予退还。
+        {
+            if (@"如果领完就消失，不领完不消失") {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    
+                });
+            }
+            timeout++;
+        }
+    });
+    dispatch_resume(timer);
+}
+-(void)groupQueue
+{
+    dispatch_group_t group =dispatch_group_create();
+    dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+       //执行一个耗时操作
+    });
+    dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+       //执行另外一个耗时操作
+    });
+    
+    //这个组的特点，是会等组里面所有的任务都执行完毕后，他会调用notify里面的这个block
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+       //等前面的异步操作都执行完毕后，回到主线程
+    });
+    
+}
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    //开启一条子线程下载图片
+    [NSThread detachNewThreadSelector:@selector(downloadImage) toTarget:self withObject:nil];
+}
+-(void)downloadImage
+{
+    //计算代码的执行时间
+    NSDate *start =[NSDate date];
+    
+    
+    
+    //1.确定要下载网络图片的URL地址，一个url对应着网络上的一个资源
+    NSURL *url =[NSURL URLWithString:@"http://news.youth.cn/js/201606/W020160628560038227469.jpg"];
+    //2.根据url地址下载图片数据到本地
+    NSData *data =[NSData dataWithContentsOfURL:url];
+    //3.把下载到本地的二进制数据转换成图片
+    UIImage *image =[UIImage imageWithData:data];
+    NSDate *end =[NSDate date];
+    NSLog(@"操作花费了的时间为：%f",[end timeIntervalSinceDate:start]);
+    //4.回到主线程刷新UI
+    //1.方法一：
+    [self performSelectorOnMainThread:@selector(showimage:) withObject:image waitUntilDone:YES];
+    //2.方法二
+    [self.image performSelectorOnMainThread:@selector(setImage:) withObject:image waitUntilDone:YES];
+    //3.方法三
+    [self.image performSelector:@selector(setImage:) onThread:[NSThread mainThread] withObject:image waitUntilDone:YES];
+}
+-(void)showimage:(UIImage *)image
+{
+    self.image.image  = image;
+}
+//线程pthread
+-(void)pthreadTest
+{
+    pthread_t thread;
+    NSString *name = @"archy";
+//    pthread_create(&thread, NULL, run, (__bridge void *)(name));
 }
 
+-(void)run
+{
+    
+}
 //多线程NSTHread
 -(void)NSTHreadTest
 {
@@ -37,7 +133,7 @@
     
     //阻塞（暂停）线程
     [NSThread sleepForTimeInterval:700];
-    [NSThread sleepUntilDate:[NSDate date]];
+    [NSThread sleepUntilDate:[NSDate dateWithTimeIntervalSinceNow:2.0]];
     
     //退出线程
     [NSThread exit];
