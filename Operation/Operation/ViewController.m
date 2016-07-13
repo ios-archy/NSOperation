@@ -11,6 +11,8 @@
 #import "OperationString.h"
 #import <pthread.h>
 @interface ViewController ()
+@property (nonatomic,strong)UIImageView *image1;
+@property (nonatomic,strong)UIImageView *image2;
 @property (nonatomic,strong)UIImageView *image;
 @end
 
@@ -20,10 +22,73 @@
     [super viewDidLoad];
     _image =[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 200, 200)];
     [self.view addSubview:_image];
+    _image1 =[[UIImageView alloc]initWithFrame:CGRectMake(0, 300, 200, 200)];
+    [self.view addSubview:_image1];
+    _image2 =[[UIImageView alloc]initWithFrame:CGRectMake(0, 600, 200, 200)];
+    [self.view addSubview:_image2];
 //    [self stringtest];
 //    [self NSTHreadTest];
 //    [self groupQueue];
-    [self timerCount];
+//    [self timerCount];
+    [self dependence];
+}
+
+-(void)dependence
+{
+//    NSInvocationOperation *operationA =[[NSInvocationOperation alloc]initWithTarget:self selector:@selector(runtest) object:nil];
+//    NSInvocationOperation *operationB =[[NSInvocationOperation alloc]initWithTarget:self selector:@selector(runtest) object:nil];
+//    [operationB addDependency:operationA]; //操作B依赖于操作A   可以在不用queue的NSOperation之间创建依赖关系
+//    [operationA start];
+//    [operationB start];
+    
+    //1.创建队列
+    NSOperationQueue *queue =[[NSOperationQueue alloc]init];
+    //2.封装操作下载图片1
+    NSBlockOperation *op1 =[NSBlockOperation blockOperationWithBlock:^{
+        NSURL *url = [NSURL URLWithString:@"http://h.hiphotos.baidu.com/zhidao/pic/item/6a63f6246b600c3320b14bb3184c510fd8f9a185.jpg"];
+        NSData *data =[NSData dataWithContentsOfURL:url];
+        //拿到图片数据
+        self.image1.image =[UIImage imageWithData:data];
+    }];
+    
+    //3.封装操作下载图片2
+    NSBlockOperation *op2 =[NSBlockOperation blockOperationWithBlock:^{
+        NSURL *url = [NSURL URLWithString:@"http://h.hiphotos.baidu.com/zhidao/pic/item/6a63f6246b600c3320b14bb3184c510fd8f9a185.jpg"];
+        NSData *data =[NSData dataWithContentsOfURL:url];
+        //拿到图片数据
+        self.image2.image =[UIImage imageWithData:data];
+    }];
+    
+    //4.合成图片
+    NSBlockOperation *combine =[NSBlockOperation blockOperationWithBlock:^{
+       //1.开启图形上下文
+        UIGraphicsBeginImageContext(CGSizeMake(200, 200));
+        
+        //2.画image1
+        [self.image1.image drawInRect:CGRectMake(0, 300, 200, 100)];
+        
+        //3.画image2
+        [self.image2.image drawInRect:CGRectMake(0, 600, 200, 100)];
+        
+        //4.4根据图形上下文拿到图片数据
+        UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+        
+        //4.5关闭图形上下文
+        UIGraphicsEndImageContext();
+        
+        //7.回到主线程刷新UI
+        [[NSOperationQueue mainQueue ]addOperationWithBlock:^{
+            self.image1.image = image;
+        }];
+    }];
+    
+    //5.设置操作依赖
+    [combine addDependency:op1];
+    [combine addDependency:op2];
+    //6.添加操作到队列中执行
+    [queue addOperation:op1];
+    [queue addOperation:op2];
+    [queue addOperation:combine];
 }
 -(void)timerCount
 {
